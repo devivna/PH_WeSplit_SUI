@@ -9,8 +9,8 @@ import SwiftUI
 
 struct ContentView: View {
     let priviousTextTextField = "0"
-    @State private var textTextField: String = "0"
-    @State private var picker = 2
+    @State private var amount = 0.0
+    @State private var numberOfPeople = 2 // 2...10 => 2 = 3 place in array
     @State private var percent = 0 // percents[0]
     
     let percents = [10, 15, 20, 25, 0]
@@ -18,11 +18,13 @@ struct ContentView: View {
         NavigationView {
             Form {
                 Section {
-                    TextField(priviousTextTextField, text: $textTextField)
-                    Picker("Number of people", selection: $picker) {
+                    TextField("Amount", value: $amount, format: .currency(code: Locale.current.currencyCode ?? "UAH"))
+                        .keyboardType(.decimalPad)
+                        
+                    
+                    Picker("Number of people", selection: $numberOfPeople ) {
                         ForEach(2..<11) { number in
                             Text("\(number) people")
-                                .tag(number)
                         }
                     }
                 }
@@ -31,7 +33,6 @@ struct ContentView: View {
                     Picker(selection: $percent, label: Text("")) {
                         ForEach(percents, id: \.self) { number in
                             Text(number, format: .percent)
-                                .tag(number)
                         }
                     }
                     .pickerStyle(.segmented)
@@ -40,10 +41,9 @@ struct ContentView: View {
                 })
                 
                 Section {
+                    Text(amount, format: .currency(code: Locale.current.currencyCode ?? "UAH"))
+                    
                     Text(calculateAmount())
-                    // textTextField
-                    // picker.description
-                    // percent.description
                 }
                 
                 .navigationTitle("WeSplit")
@@ -54,11 +54,11 @@ struct ContentView: View {
     
     func calculateAmount() -> String {
 
-        if !textTextField.isEmpty {
-            let totalAmount = (Double(textTextField) ?? 0) * (1 + Double(percent) / 100)
-            let amountPerPerson = totalAmount / Double(picker)
-            return "\(amountPerPerson)"
-        }
+//        if !amount.isEmpty {
+//            let totalAmount = (Double(amount) ?? 0) * (1 + Double(percent) / 100)
+//            let amountPerPerson = totalAmount / Double(picker)
+//            return "\(amountPerPerson)"
+//        }
         
         return "$\(0.0)"
         // return "$\(amount)"
